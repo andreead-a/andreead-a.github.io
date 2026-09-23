@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RoomLight: A 2.5D Illumination Prior for Indoor Environments</title>
+  <meta name="description"
+    content="RoomLight is a spatially-aware illumination prior for indoor scenes: a VAE over paired HDR radiance and depth panoramas whose latent decodes into a 2.5D area light, directly usable in differentiable rendering.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="RoomLight: A 2.5D Illumination Prior for Indoor Environments">
+  <meta property="og:description"
+    content="A learned indoor illumination prior that decodes into a 2.5D area light instead of a far-field environment map.">
+  <meta property="og:image" content="images/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+
+  <main id="top">
+
+    <!-- ============================================================ Hero -->
+    <header class="hero">
+      <span class="pill">arXiv 2026</span>
+      <h1 class="hero__title">RoomLight: A 2.5D Illumination Prior for Indoor Environments</h1>
+
+      <p class="hero__authors">
+        <a href="../">Andreea Ardelean</a>
+        <span class="dot">·</span>
+        <a href="https://eggerbernhard.ch/" target="_blank" rel="noopener">Bernhard Egger</a>
+      </p>
+      <p class="hero__affil">Friedrich-Alexander-Universität Erlangen-Nürnberg</p>
+
+      <div class="hero__actions">
+        <!-- TODO: replace # with the arXiv URL -->
+        <a class="btn" href="https://arxiv.org/abs/2609.28300" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6zm8 1.5V8h4.5M8 12h8v1.5H8zm0 3.5h8V17H8z"/></svg>
+          arXiv
+        </a>
+        <a class="btn" href="https://github.com/andreead-a/RoomLight" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+          Code
+        </a>
+
+        <a class="btn" href="#bibtex">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg>
+          BibTeX
+        </a>
+      </div>
+
+      <p class="tldr"><span class="tldr__label">TL;DR</span> A learned prior over HDR panoramas and aligned depth,
+        enabling differentiable optimization of spatially-varying indoor illumination.</p>
+    </header>
+
+
+    <!-- ============================================================ Abstract + teaser -->
+    <section class="section section--wide intro" id="abstract">
+
+      <div class="intro__grid">
+        <figure class="figure intro__figure">
+          <a href="images/motivation.png" target="_blank" rel="noopener">
+            <img src="images/motivation.png" width="1141" height="873"
+              alt="A synthetic room with two bunnies; environment-map lighting cannot match both, a 2.5D area light does.">
+          </a>
+          <figcaption>
+            Even in a simple room, no single environment map can reproduce the appearance of two objects at
+        once, regardless of where the panorama is captured. Instead, a 2.5D area light built from an HDR panorama and its depth models spatially-varying illumination and closely matches the original
+        rendering.
+          </figcaption>
+        </figure>
+        <div class="intro__text">
+          <h2 class="section__title">Abstract</h2>
+          <div class="prose prose--compact">
+            <p>
+            Ill-posed inverse problems require priors to constrain the solution space toward plausible outcomes. In
+            inverse rendering, learned priors modeling the distribution of natural illumination improve the recovery
+            of scene properties. However, existing models rely on the distant-illumination assumption, representing
+            lighting as a far-field environment map. This limits their applicability to indoor scenes, where
+            illumination is highly spatially varying due to finite-distance emitters, visibility changes, and
+            parallax, all of which are poorly approximated by a single environment map.
+            To address this, we introduce a spatially-aware illumination prior trained on real-world indoor panoramas
+            and their estimated depth. Our variational autoencoder model learns a compact, optimizable latent space
+            that decodes into HDR radiance and depth, parameterizing an area light emitter for direct integration into
+            standard differentiable rendering pipelines. This design bridges the plausibility guarantees of a learned
+            prior with the gradient flow required for downstream optimization. Crucially, by jointly modeling radiance
+            and depth, our prior captures the spatial structure of indoor illumination, instead of treating the light
+            sources as infinitely distant. We demonstrate that this formulation enables spatially-varying illumination
+            modeling and achieves higher-fidelity recovery of indoor lighting compared to existing approaches.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ Method -->
+    <section class="section section--wide" id="method">
+      <h2 class="section__title">Method</h2>
+      <figure class="figure figure--scroll">
+        <a href="images/method.png" target="_blank" rel="noopener">
+          <img src="images/method.png" width="3000" height="438" 
+            alt="Method overview: prior training of a VAE on HDR and depth panoramas; observation fitting through a frozen decoder, a 2.5D area light, and a differentiable renderer.">
+        </a>
+        <figcaption class="only-mobile">Scroll sideways to follow the pipeline →</figcaption>
+      </figure>
+      <ol class="steps">
+        <li>
+          <!-- <span class="steps__num">01</span> -->
+          <h3>Prior training</h3>
+          <p>A convolutional VAE is trained on equirectangular panoramas pairing HDR radiance with aligned depth,
+            so a single global latent code <var>z</var> summarizes an entire indoor environment.</p>
+        </li>
+        <li>
+          <!-- <span class="steps__num">02</span> -->
+          <h3>Lift to a 2.5D area light</h3>
+          <p>The decoded radiance and depth maps are lifted into an emissive mesh. Adding one depth channel turns a
+            direction-only environment map into a surface in space, so the light it casts varies with position.</p>
+        </li>
+        <li>
+          <!-- <span class="steps__num">03</span> -->
+          <h3>Observation fitting</h3>
+          <p>The encoder is discarded and the decoder frozen. The emitter lights the scene in a differentiable
+            renderer; the photometric loss against the target is backpropagated to <var>z</var> and an exposure
+            scale <var>s</var>.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============================================================ Samples -->
+    <section class="section section--wide" id="samples">
+      <h2 class="section__title">Random samples from the prior</h2>
+      <p class="lede">
+      We draw latent codes from <span class="math"><span class="cal">N</span>(0, <var>I</var>)</span>, decode each into radiance and depth, and lift the resulting pair into a 2.5D area light. The generated samples depict coherent rooms with diverse layouts and distinct light sources. A glossy probe moving through each scene visualizes the emitter’s position-dependent illumination.
+      </p>
+      <div class="media media--light">
+        <video autoplay muted loop playsinline preload="metadata" poster="videos/prior_samples_poster.jpg">
+          <source src="videos/prior_samples.mp4" type="video/mp4">
+        </video>
+      </div>
+      <p class="caption">Per sample: a top view with the emitter's extent, the camera's field of view and the probe's path (top); the probe moving through the scene (bottom).</p>
+    </section>
+
+    <!-- ============================================================ Real -->
+    <section class="section section--wide" id="real">
+      <h2 class="section__title">Application on real images</h2>
+      <p class="lede">
+        We deploy our prior as the illumination parameterization in an analysis-by-synthesis setting for inverse rendering, where scene parameters are recovered by rendering a hypothesis and comparing it against the observed image. Given a single real photograph as the target observation, we use off-the-shelf models to estimate the camera intrinsics, reconstruct a depth-based scene mesh, and segment the objects. We then assign a material to each object and jointly optimize the material and illumination parameters by minimizing the photometric loss through a differentiable renderer.
+      </p>
+      <div class="media media--light">
+        <video autoplay muted loop playsinline preload="metadata" poster="videos/real_optimisation_poster.jpg">
+          <source src="videos/real_optimisation.mp4" type="video/mp4">
+        </video>
+      </div>
+    </section>
+
+    <!-- ============================================================ Synthetic -->
+    <section class="section section--wide" id="synthetic">
+      <h2 class="section__title">Evaluation on synthetic scenes</h2>
+      <p class="lede">
+        Each scene consists of a single low-dynamic-range observation of objects with known geometry, materials, and poses, viewed from a calibrated camera, with illumination as the only optimized variable. The scenes are constructed from 25 real indoor panoramas with estimated depth, which we lift into 2.5D area-light emitters illuminating three objects. A bunny and an armadillo provide the observations that drive the optimization, while a held-out sphere is used for evaluation.
+      </p>
+      <a class="card" href="viewer/">
+      <div class="card__tiles">
+        <div class="tile"><img src="images/viewer_preview_ours.webp" alt="" loading="lazy"><span>Ours</span></div>
+        <div class="tile"><img src="images/viewer_preview_gt.webp" alt="" loading="lazy"><span>Ground truth</span></div>
+      </div>
+      <div class="card__body">
+        <h3>Interactive comparison</h3>
+        <p>Side-by-side comparison of the methods and ground truth across three materials and three views: the zoomed-in evaluation probe, the fitted observation, and the full evaluation. </p>
+        <span class="btn btn--primary">Open the viewer</span>
+      </div>
+      </a>
+    </section>
+
+    <!-- ============================================================ BibTeX -->
+    <section class="section" id="bibtex">
+      <h2 class="section__title">BibTeX</h2>
+      <div class="bib">
+        <button class="bib__copy" type="button" data-copy>Copy</button>
+<pre><code>@article{ardelean2026roomlight,
+  title   = {RoomLight: A 2.5D Illumination Prior for Indoor Environments},
+  author  = {Ardelean, Andreea and Egger, Bernhard},
+  journal = {arXiv preprint arXiv:2609.28300},
+  year    = {2026}
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================ Acknowledgements -->
+    <section class="section" id="acknowledgements">
+      <h2 class="section__title">Acknowledgements</h2>
+      <div class="prose">
+        <p>
+          We thank <a href="https://paul-hi.github.io/" target="_blank" rel="noopener">Paul Himmler</a> and 
+          <a href="https://reality.tf.fau.de/staff/t.ardelean.html" target="_blank" rel="noopener">Timotei Ardelean</a> 
+          for their constructive feedback during project development and manuscript preparation.
+          The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen
+          National High Performance Computing Center (<a href="https://hpc.fau.de/" target="_blank"
+            rel="noopener">NHR@FAU</a>) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU) under the NHR
+          project b315dc RoomLight. NHR funding is provided by federal and Bavarian state authorities.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+
+  <script>
+    // Copy BibTeX
+    document.querySelectorAll('[data-copy]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var code = b.parentElement.querySelector('code').textContent;
+        navigator.clipboard.writeText(code).then(function () {
+          b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1600);
+        });
+      });
+    });
+    // Don't autoplay for people who asked for less motion.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('video[autoplay]').forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; });
+    }
+  </script>
+</body>
+
+</html>

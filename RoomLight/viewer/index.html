@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RoomLight — Method comparison</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  /* Same tokens as ../css/style.css so the viewer reads as part of the project page. */
+  :root {
+    --bg:#fdfdfc; --surface:#ffffff; --border:#e7e5e1; --border-strong:#d5d2cd;
+    --text:#1a1a1c; --muted:#8a8a94; --text-muted:#55555f;
+    --accent:#5b41cf; --accent-soft:#f1eefb;   /* left  */
+    --accent2:#d9633b;                          /* right — warm, so the two wipe sides never blur */
+    --radius:8px;
+    --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:var(--ui);
+         -webkit-font-smoothing:antialiased; }
+
+  header { background:rgba(253,253,252,.88); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+           border-bottom:1px solid var(--border);
+           padding:11px 24px; display:flex; align-items:center; gap:16px;
+           flex-wrap:wrap; position:sticky; top:0; z-index:100; }
+  header h1 { font-size:1rem; font-weight:600; letter-spacing:-.01em; white-space:nowrap; }
+  .back { color:var(--muted); font-size:.8rem; white-space:nowrap; text-decoration:none; }
+  .back:hover { color:var(--accent); }
+  .grp { display:flex; align-items:center; gap:8px; }
+  .ctrl-label { font-size:.68rem; font-weight:600; letter-spacing:.1em;
+                text-transform:uppercase; color:var(--muted); }
+  select { background:var(--surface); color:var(--text); border:1px solid var(--border-strong);
+           border-radius:999px; padding:6px 10px; font:inherit; font-size:.85rem;
+           cursor:pointer; outline:none; }
+  select:hover,select:focus { border-color:var(--accent); }
+  .sel-a select { border-left:4px solid var(--accent); }
+  .sel-b select { border-left:4px solid var(--accent2); }
+  .toggle { display:flex; background:var(--surface); border:1px solid var(--border-strong);
+            border-radius:999px; overflow:hidden; }
+  .toggle button { background:transparent; color:var(--text-muted); border:none;
+                   padding:6px 12px; font:inherit; font-size:.82rem; font-weight:500; cursor:pointer;
+                   transition:background .15s,color .15s; white-space:nowrap; }
+  .toggle button:hover { color:var(--accent); }
+  .toggle button.active { background:var(--accent); color:#fff; }
+
+  main { padding:18px 24px 72px; max-width:1400px; margin:0 auto; }
+  .note { color:var(--text-muted); font-size:.84rem; line-height:1.6;
+          margin-bottom:18px; max-width:1000px; }
+  .note b { color:var(--text); font-weight:600; }
+
+  .grid-head, .grid-row { display:grid; gap:8px; align-items:center;
+    grid-template-columns:170px repeat(3,minmax(180px,1fr)); }
+  .grid-head { margin-bottom:6px; position:sticky; top:55px; z-index:40;
+               background:var(--bg); padding:4px 0; }
+  .grid-head span { font-size:.7rem; font-weight:600; letter-spacing:.1em;
+                    text-transform:uppercase; color:var(--muted); text-align:center;
+                    padding:6px 0; border-bottom:1px solid var(--border); }
+  .grid-head span:first-child { text-align:left; }
+  .grid-row { margin-bottom:8px; }
+  .scene-label { font-size:.78rem; color:var(--text-muted); font-variant-numeric:tabular-nums;
+                 word-break:break-word; padding-right:8px; }
+
+  .cell { position:relative; overflow:hidden; border-radius:var(--radius);
+          border:1px solid var(--border); aspect-ratio:1/1; user-select:none;
+          cursor:col-resize; background:#f4f3f0;
+          background-image:linear-gradient(45deg,#e9e7e3 25%,transparent 25%),
+            linear-gradient(-45deg,#e9e7e3 25%,transparent 25%),
+            linear-gradient(45deg,transparent 75%,#e9e7e3 75%),
+            linear-gradient(-45deg,transparent 75%,#e9e7e3 75%);
+          background-size:16px 16px;
+          background-position:0 0,0 8px,8px -8px,-8px 0; }
+  .cell img { position:absolute; inset:0; width:100%; height:100%;
+              object-fit:contain; display:block; pointer-events:none; }
+  .img-b { clip-path:inset(0 0 0 50%); }
+  .divider { position:absolute; top:0; left:50%; width:2px; height:100%;
+             background:#fff; transform:translateX(-50%);
+             box-shadow:0 0 0 1px rgba(26,26,28,.55), 0 0 8px rgba(0,0,0,.35); pointer-events:none; }
+  .tag { position:absolute; top:8px; z-index:4;
+         font-size:.62rem; font-weight:600; letter-spacing:.03em; padding:2px 7px; border-radius:999px;
+         color:#fff; pointer-events:none; max-width:46%;
+         overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tag-a { left:8px; background:var(--accent); }
+  .tag-b { right:8px; background:var(--accent2); }
+  .missing { position:absolute; inset:0; display:flex; align-items:center;
+             justify-content:center; color:var(--muted); font-size:.72rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="../">← Project page</a>
+  <h1>Method comparison</h1>
+  <div class="grp">
+    <span class="ctrl-label">View</span>
+    <div class="toggle" id="viewToggle"></div>
+  </div>
+  <div class="grp sel-a">
+    <span class="ctrl-label">Left</span><select id="selA"></select>
+  </div>
+  <div class="grp sel-b">
+    <span class="ctrl-label">Right</span><select id="selB"></select>
+  </div>
+</header>
+
+<main>
+  <div class="note" id="note"></div>
+  <div id="body"></div>
+</main>
+
+<script>
+const DATA = {"methods": [{"key": "ours", "label": "Ours"}, {"key": "veni_d", "label": "VENI+D"}, {"key": "veni", "label": "VENI"}, {"key": "dpi", "label": "DPI"}, {"key": "smooth_25dal", "label": "Smoothness – 2.5D AL"}, {"key": "smooth_sphere", "label": "Smoothness – Sphere"}, {"key": "smooth_env", "label": "Smoothness – Env"}, {"key": "gt", "label": "Ground truth"}], "views": [{"key": "input", "label": "Input observation"}, {"key": "eval", "label": "Evaluation view"}, {"key": "crop", "label": "Evaluation crop"}], "scenes": ["anniversary_lounge", "art_studio", "artist_workshop", "ballroom", "bank_vault", "bathroom", "bell_tower", "blue_photo_studio", "brown_photostudio_05", "cinema_lobby", "events_hall_interior", "hospital_room", "hotel_room", "large_corridor", "lebombo", "modern_bathroom", "music_hall_02", "pav_studio_03", "pine_attic", "reading_room", "small_empty_room_1", "studio_country_hall", "thatch_chapel", "unfinished_office", "warm_reception_dinner"], "materials": ["mirror", "mattesilver", "diffuse"]};
+
+const state = { view: "crop", a: DATA.methods[0].key, b: "gt" };
+const LABEL = Object.fromEntries(DATA.methods.map(m => [m.key, m.label]));
+
+const WIPE = "<b>Drag or sweep the pointer across a cell</b> to transition between the " +
+  "method selected on the left and the one on the right; the checkerboard is the " +
+  "region the metrics never score.";
+const NOTES = {
+  input: "Each cell shows the <b>input observation</b>: the view the methods were " +
+    "fitted to, whole frame. The methods are masked to the object &mdash; their " +
+    "background is a direct view of the predicted panorama, which is never scored " +
+    "&mdash; while the ground truth keeps its background, the scene the object " +
+    "actually sits in. " + WIPE,
+  eval: "Each cell shows the held-out <b>evaluation view</b>, whole frame, masked " +
+    "the same way as the input observation: methods to the object, ground truth " +
+    "with its background. " + WIPE,
+  crop: "Each cell shows the held-out <b>evaluation view</b>, reprojected so the " +
+    "camera looks straight at the evaluation object &mdash; undoing the off-axis " +
+    "perspective stretch, so the sphere appears as a circle. The reprojection is " +
+    "identical for every method, so the two selections are pixel-aligned. " +
+    "Everything, ground truth included, is masked to the object. " + WIPE,
+};
+
+function src(method, scene, mat) {
+  return `images/${state.view}/${method}/${scene}/${mat}.webp`;
+}
+
+function initControls() {
+  const toggle = document.getElementById("viewToggle");
+  DATA.views.forEach(v => {
+    const b = document.createElement("button");
+    b.textContent = v.label;
+    b.className = state.view === v.key ? "active" : "";
+    b.onclick = () => {
+      state.view = v.key;
+      toggle.querySelectorAll("button").forEach(x =>
+        x.classList.toggle("active", x === b));
+      render();
+    };
+    toggle.appendChild(b);
+  });
+
+  [["selA", "a"], ["selB", "b"]].forEach(([id, key]) => {
+    const sel = document.getElementById(id);
+    DATA.methods.forEach(m => sel.add(new Option(m.label, m.key)));
+    sel.value = state[key];
+    sel.onchange = () => { state[key] = sel.value; render(); };
+  });
+}
+
+function render() {
+  document.getElementById("note").innerHTML = NOTES[state.view];
+  const root = document.getElementById("body");
+  root.innerHTML = "";
+
+  const head = document.createElement("div");
+  head.className = "grid-head";
+  head.innerHTML = "<span>scene</span>" +
+    DATA.materials.map(m => `<span>${m}</span>`).join("");
+  root.appendChild(head);
+
+  DATA.scenes.forEach(scene => {
+    const row = document.createElement("div");
+    row.className = "grid-row";
+    const label = document.createElement("div");
+    label.className = "scene-label";
+    label.textContent = scene;
+    row.appendChild(label);
+
+    DATA.materials.forEach(mat => {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      const mk = (m, cls) => {
+        const im = document.createElement("img");
+        im.className = cls;
+        im.loading = "lazy";
+        im.src = src(m, scene, mat);
+        im.alt = `${LABEL[m]} / ${scene} / ${mat}`;
+        return im;
+      };
+      cell.appendChild(mk(state.a, "img-a"));
+      cell.appendChild(mk(state.b, "img-b"));
+      cell.insertAdjacentHTML("beforeend",
+        '<div class="divider"></div>' +
+        `<div class="tag tag-a">${LABEL[state.a]}</div>` +
+        `<div class="tag tag-b">${LABEL[state.b]}</div>`);
+      row.appendChild(cell);
+    });
+    root.appendChild(row);
+  });
+  attachSliders(root);
+}
+
+function attachSliders(root) {
+  root.querySelectorAll(".cell").forEach(cell => {
+    const b = cell.querySelector(".img-b");
+    const d = cell.querySelector(".divider");
+    let dragging = false;
+    const set = x => {
+      const r = cell.getBoundingClientRect();
+      const pct = (Math.max(0, Math.min(1, (x - r.left) / r.width)) * 100).toFixed(2) + "%";
+      b.style.clipPath = `inset(0 0 0 ${pct})`;
+      d.style.left = pct;
+    };
+    // Hover-to-wipe as well as drag: with 75 cells, sweeping beats dragging each one.
+    cell.addEventListener("mousemove", e => { if (dragging || e.buttons === 0) set(e.clientX); });
+    cell.addEventListener("mousedown", e => { dragging = true; set(e.clientX); e.preventDefault(); });
+    cell.addEventListener("touchstart", e => { dragging = true; set(e.touches[0].clientX); }, {passive:true});
+    cell.addEventListener("touchmove", e => { if (dragging) set(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener("mouseup", () => { dragging = false; });
+    window.addEventListener("touchend", () => { dragging = false; });
+  });
+}
+
+initControls();
+render();
+</script>
+</body>
+</html>

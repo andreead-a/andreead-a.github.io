@@ -1,0 +1,207 @@
+@charset "utf-8";
+
+/* Same design tokens as the homepage, kept local so this page is self-contained. */
+:root {
+  --bg: #fdfdfc;
+  --surface: #ffffff;
+  --ink: #0d0e11;
+  --text: #1a1a1c;
+  --text-muted: #55555f;
+  --text-subtle: #8a8a94;
+  --border: #e7e5e1;
+  --border-strong: #d5d2cd;
+  --accent: #5b41cf;
+  --accent-hover: #4a33b3;
+  --accent-soft: #f1eefb;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --measure: 720px;
+  --wide: 1060px;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+main { padding-bottom: 104px; }
+img, video { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.012em; }
+
+/* ------------------------------------------------------------- Hero */
+.hero { max-width: 860px; margin: 0 auto; padding: 72px 24px 8px; text-align: center; }
+.pill {
+  display: inline-block; padding: 3px 11px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em;
+}
+.hero__title {
+  margin: 18px 0 0; font-size: clamp(1.75rem, 3.6vw, 2.6rem);
+  line-height: 1.15; letter-spacing: -0.028em; font-weight: 650;
+}
+.hero__authors { margin: 22px 0 0; font-size: 1.0625rem; }
+.hero__authors a { color: var(--text); border-bottom: 1px solid var(--border-strong); }
+.hero__authors a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.dot { color: var(--text-subtle); margin: 0 8px; }
+.hero__affil { margin: 6px 0 0; color: var(--text-muted); font-size: 0.9375rem; }
+.hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 26px; }
+/* TL;DR: the one-sentence version, centred under the hero buttons. */
+.tldr {
+  max-width: 660px; margin: 30px auto 0;
+  color: var(--text-muted); font-size: 1rem; line-height: 1.6;
+  text-wrap: balance;
+}
+.tldr__label {
+  margin-right: 7px; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--accent); vertical-align: 1px;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 15px; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: var(--surface);
+  color: var(--text); font-size: 0.875rem; font-weight: 500;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+}
+.btn svg { width: 15px; height: 15px; fill: currentColor; }
+.btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn--primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+
+/* ------------------------------------------------------------- Sections */
+.section { max-width: var(--measure); margin: 0 auto; padding: 64px 24px 0; }
+.section--wide { max-width: var(--wide); }
+.section__title {
+  display: flex; align-items: center; gap: 18px; margin-bottom: 22px;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; color: var(--text-subtle);
+}
+.section__title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.prose p, .lede { margin: 0 0 14px; color: var(--text-muted); }
+.prose p { text-align: justify; hyphens: manual; }
+.prose p:last-child { margin-bottom: 0; }
+.lede { margin-bottom: 22px; text-align: justify; hyphens: manual; }
+/* Inline math in Computer Modern (KaTeX web fonts, self-hosted in ../fonts). */
+@font-face { font-family: "KaTeX_Math"; src: url("../fonts/KaTeX_Math-Italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: "KaTeX_Caligraphic"; src: url("../fonts/KaTeX_Caligraphic-Regular.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "KaTeX_Main"; src: url("../fonts/KaTeX_Main-Regular.woff2") format("woff2"); font-display: swap; }
+/* 1.2em matches KaTeX's own scaling against body text; line-height 1 stops the fonts'
+   tall ascent/descent metrics from inflating the line box. */
+var, .math { font-size: 1.2em; line-height: 1; }
+var { font-family: "KaTeX_Math", "Times New Roman", serif; font-style: italic; }
+.math { font-family: "KaTeX_Main", "Times New Roman", serif; }
+.math var { font-size: 1em; }
+.cal { font-family: "KaTeX_Caligraphic", serif; }
+
+/* ------------------------------------------------------------- Abstract beside the teaser */
+.intro { padding-top: 52px; }
+/* Two rows: the heading sits alone in row one, so the figure's top aligns with the
+   abstract body, not the heading. .intro__text is flattened into the grid. */
+.intro__grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  grid-template-areas:
+    "title ."
+    "text  figure";
+  column-gap: 44px;
+  align-items: start;
+}
+.intro__text { display: contents; }
+.intro__text .section__title { grid-area: title; }
+.intro__text .prose { grid-area: text; }
+.intro__figure { grid-area: figure; margin: 0; }
+/* Paper figures (Fig. 1, method overview) sit flush: no card, no rounding. They are
+   transparent PNGs, so the page ground must show through instead of a white panel. */
+.intro .intro__figure a,
+.intro .intro__figure a:hover,
+.figure.figure--scroll a,
+.figure.figure--scroll a:hover { border-radius: 0; border: 0; box-shadow: none; background: transparent; }
+.intro__text .section__title { margin-bottom: 16px; }
+.prose--compact p { font-size: 0.9375rem; line-height: 1.62; margin-bottom: 12px; text-align: justify; hyphens: manual; }
+
+/* ------------------------------------------------------------- Figures & media */
+.figure { margin: 0; }
+.figure--teaser { max-width: 780px; margin: 44px auto 0; padding: 0 24px; }
+.figure--narrow { max-width: 640px; margin: 28px auto 0; }
+.figure a { display: block; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--surface); transition: box-shadow 0.15s, border-color 0.15s; }
+.figure a:hover { border-color: var(--border-strong); box-shadow: 0 10px 30px -14px rgba(26, 26, 28, 0.25); }
+.figure img { width: 100%; height: auto; }
+figcaption, .caption { margin: 12px 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--text-subtle); }
+.figure + .figure, .caption + .figure { margin-top: 28px; }
+.media {
+  border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);
+  background: var(--ink); aspect-ratio: 16 / 9;
+}
+.media--light { background: var(--surface); }
+.media video { width: 100%; height: 100%; object-fit: cover; }
+
+/* ------------------------------------------------------------- Method steps */
+.steps {
+  list-style: none; margin: 28px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+}
+.steps li { border-top: 1px solid var(--border); padding-top: 16px; }
+.steps__num { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; color: var(--accent); }
+.steps h3 { margin: 6px 0 8px; font-size: 1rem; }
+.steps p { margin: 0; font-size: 0.9063rem; line-height: 1.6; color: var(--text-muted); }
+
+/* ------------------------------------------------------------- Viewer card */
+.card {
+  display: grid; grid-template-columns: 1fr 1.1fr; gap: 0;
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  background: var(--surface); color: inherit; transition: box-shadow 0.15s, border-color 0.15s;
+}
+.card:hover { border-color: var(--border-strong); box-shadow: 0 14px 40px -18px rgba(26, 26, 28, 0.3); color: inherit; }
+.card__tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); }
+.tile { position: relative; background: var(--ink); }
+.tile img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; }
+.tile span {
+  position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 4px;
+  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; color: #fff; background: rgba(13, 14, 17, 0.72);
+}
+.card__body { padding: 30px 32px; display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: flex-start; }
+.card__body h3 { font-size: 1.125rem; }
+.card__body p { margin: 0; color: var(--text-muted); font-size: 0.9375rem; }
+.card__body .btn { margin-top: 6px; }
+
+/* ------------------------------------------------------------- BibTeX */
+.bib { position: relative; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.bib pre { margin: 0; padding: 22px 24px; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; color: var(--text-muted); }
+.bib__copy {
+  position: absolute; top: 12px; right: 12px; padding: 5px 11px; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-muted);
+  font: inherit; font-size: 0.75rem; font-weight: 500; cursor: pointer;
+}
+.bib__copy:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ------------------------------------------------------------- Responsive */
+@media (max-width: 860px) {
+  .intro__grid { grid-template-columns: 1fr; grid-template-areas: "title" "text" "figure"; }
+  .intro__figure { margin-top: 28px; }
+  .steps { grid-template-columns: 1fr; gap: 18px; }
+  .card { grid-template-columns: 1fr; }
+}
+.only-mobile { display: none; }
+
+@media (max-width: 720px) {
+  /* Ultra-wide figures scroll sideways rather than shrinking below legibility. */
+  .figure--scroll a { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .figure--scroll img { width: auto; height: 230px; max-width: none; }
+  .only-mobile { display: block; }
+  .hero { padding-top: 48px; }
+  .section { padding-top: 48px; }
+  .card__body { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
